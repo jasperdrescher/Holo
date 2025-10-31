@@ -88,7 +88,15 @@ public class HorizontalCardHolder : MonoBehaviour
 
 	void Selected(Card card)
 	{
-		selectedCard = card;
+		if (card.isSelected)
+		{
+			selectedCard = card;
+		}
+		else
+		{
+			selectedCard = null;
+		}
+		
 		SelectedCardEvent.Invoke();
 	}
 
