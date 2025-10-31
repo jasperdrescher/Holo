@@ -1,15 +1,11 @@
-using System;
 using UnityEngine;
 using DG.Tweening;
-using System.Collections;
-using UnityEngine.EventSystems;
-using Unity.Collections;
 using UnityEngine.UI;
+using TMPro;
 
+[RequireComponent(typeof(Canvas))]
 public class CardVisual : MonoBehaviour
 {
-    private bool initalize = false;
-
     [Header("Card")]
     public Card parentCard;
     private Transform cardTransform;
@@ -25,7 +21,9 @@ public class CardVisual : MonoBehaviour
     private Canvas shadowCanvas;
     [SerializeField] private Transform shakeParent;
     [SerializeField] private Transform tiltParent;
-    [SerializeField] private Image cardImage;
+	[SerializeField] private Image cardImage;
+	[SerializeField] private TextMeshProUGUI hitpointsText;
+	[SerializeField] private TextMeshProUGUI strengthText;
 
     [Header("Follow Parameters")]
     [SerializeField] private float followSpeed = 30;
@@ -61,8 +59,9 @@ public class CardVisual : MonoBehaviour
     [SerializeField] private CurveParameters curve;
 
     private float curveYOffset;
-    private float curveRotationOffset;
-    private Coroutine pressCoroutine;
+	private float curveRotationOffset;
+	
+    private bool isInitialized = false;
 
     private void Start()
     {
@@ -75,7 +74,7 @@ public class CardVisual : MonoBehaviour
         parentCard = target;
         cardTransform = target.transform;
         canvas = GetComponent<Canvas>();
-        shadowCanvas = visualShadow.GetComponent<Canvas>();
+		shadowCanvas = visualShadow.GetComponent<Canvas>();
 
         //Event Listening
         parentCard.PointerEnterEvent.AddListener(PointerEnter);
@@ -84,10 +83,12 @@ public class CardVisual : MonoBehaviour
         parentCard.EndDragEvent.AddListener(EndDrag);
         parentCard.PointerDownEvent.AddListener(PointerDown);
         parentCard.PointerUpEvent.AddListener(PointerUp);
-        parentCard.SelectEvent.AddListener(Select);
+		parentCard.SelectEvent.AddListener(Select);
+
+		UpdateVisual();
 
         //Initialization
-        initalize = true;
+        isInitialized = true;
     }
 
     public void UpdateIndex(int length)
@@ -95,16 +96,21 @@ public class CardVisual : MonoBehaviour
         transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
     }
 
-    void Update()
-    {
-        if (!initalize || parentCard == null) return;
+	void Update()
+	{
+		if (!isInitialized || parentCard == null) return;
 
-        HandPositioning();
-        SmoothFollow();
-        FollowRotation();
-        CardTilt();
-
-    }
+		HandPositioning();
+		SmoothFollow();
+		FollowRotation();
+		CardTilt();
+	}
+	
+	public void UpdateVisual()
+	{
+		hitpointsText.SetText("HP " + parentCard.hitpoints.ToString());
+		strengthText.SetText("STR " + parentCard.strength.ToString());
+	}
 
     private void HandPositioning()
     {
@@ -214,5 +220,4 @@ public class CardVisual : MonoBehaviour
         visualShadow.localPosition += (-Vector3.up * shadowOffset);
         shadowCanvas.overrideSorting = false;
     }
-
 }

@@ -14,11 +14,25 @@ public class BattleManager : MonoBehaviour
 		npcCardHolder.SelectedCardEvent.AddListener(OnSelected);
 	}
 
-    void OnSelected()
+	private void OnSelected()
 	{
 		if (playerCardHolder.selectedCard && npcCardHolder.selectedCard)
 		{
 			Debug.Log("Fight!");
+			Attack(playerCardHolder.selectedCard, npcCardHolder.selectedCard);
+		}
+	}
+	
+	private void Attack(Card playerCard, Card jokerCard)
+	{
+		jokerCard.hitpoints -= playerCard.strength;
+		if (jokerCard.hitpoints <= 0)
+		{
+			npcCardHolder.OnCardDied(jokerCard);
+		}
+		else
+		{
+			jokerCard.cardVisual.UpdateVisual();
 		}
 	}
 }

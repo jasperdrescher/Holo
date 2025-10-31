@@ -14,6 +14,9 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 	private VisualCardsHandler visualHandler;
 	private Vector3 offset;
 
+	public int hitpoints = 10;
+	public int strength = 2;
+
 	public bool isPlayerCard = false;
 
 	[Header("Movement")]
@@ -168,7 +171,6 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 				transform.localPosition = Vector3.zero;
 		}
 	}
-
 
 	public int SiblingAmount()
 	{

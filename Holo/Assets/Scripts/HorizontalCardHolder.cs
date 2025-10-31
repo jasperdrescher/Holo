@@ -96,7 +96,7 @@ public class HorizontalCardHolder : MonoBehaviour
 		{
 			selectedCard = null;
 		}
-		
+
 		SelectedCardEvent.Invoke();
 	}
 
@@ -158,29 +158,35 @@ public class HorizontalCardHolder : MonoBehaviour
         }
     }
 
-    void Swap(int index)
-    {
-        isCrossing = true;
+	void Swap(int index)
+	{
+		isCrossing = true;
 
-        Transform focusedParent = draggedCard.transform.parent;
-        Transform crossedParent = cards[index].transform.parent;
+		Transform focusedParent = draggedCard.transform.parent;
+		Transform crossedParent = cards[index].transform.parent;
 
-        cards[index].transform.SetParent(focusedParent);
-        cards[index].transform.localPosition = cards[index].isSelected ? new Vector3(0, cards[index].selectionOffset, 0) : Vector3.zero;
-        draggedCard.transform.SetParent(crossedParent);
+		cards[index].transform.SetParent(focusedParent);
+		cards[index].transform.localPosition = cards[index].isSelected ? new Vector3(0, cards[index].selectionOffset, 0) : Vector3.zero;
+		draggedCard.transform.SetParent(crossedParent);
 
-        isCrossing = false;
+		isCrossing = false;
 
-        if (cards[index].cardVisual == null)
-            return;
+		if (cards[index].cardVisual == null)
+			return;
 
-        bool swapIsRight = cards[index].ParentIndex() > draggedCard.ParentIndex();
-        cards[index].cardVisual.Swap(swapIsRight ? -1 : 1);
+		bool swapIsRight = cards[index].ParentIndex() > draggedCard.ParentIndex();
+		cards[index].cardVisual.Swap(swapIsRight ? -1 : 1);
 
-        //Updated Visual Indexes
-        foreach (Card card in cards)
-        {
-            card.cardVisual.UpdateIndex(transform.childCount);
-        }
-    }
+		//Updated Visual Indexes
+		foreach (Card card in cards)
+		{
+			card.cardVisual.UpdateIndex(transform.childCount);
+		}
+	}
+
+	public void OnCardDied(Card deadCard)
+	{
+		Destroy(deadCard.transform.parent.gameObject);
+		cards.Remove(deadCard);
+	}
 }
