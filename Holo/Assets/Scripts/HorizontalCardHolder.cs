@@ -1,10 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
 
+[RequireComponent(typeof(RectTransform))]
 public class HorizontalCardHolder : MonoBehaviour
 {
 
@@ -46,39 +46,43 @@ public class HorizontalCardHolder : MonoBehaviour
         StartCoroutine(Frame());
 
         IEnumerator Frame()
-        {
-            yield return new WaitForSecondsRealtime(.1f);
-            for (int i = 0; i < cards.Count; i++)
-            {
-                if (cards[i].cardVisual != null)
-                    cards[i].cardVisual.UpdateIndex(transform.childCount);
-            }
-        }
+		{
+			yield return new WaitForSecondsRealtime(.1f);
+			for (int i = 0; i < cards.Count; i++)
+			{
+				if (cards[i].cardVisual != null)
+					cards[i].cardVisual.UpdateIndex(transform.childCount);
+			}
+		}
+
+		SFXManager.instance.PlayCardSpreadSFX();
     }
 
     private void BeginDrag(Card card)
     {
         selectedCard = card;
+        SFXManager.instance.PlayCardBeginDragSFX();
     }
 
+	void EndDrag(Card card)
+	{
+		if (selectedCard == null)
+			return;
 
-    void EndDrag(Card card)
-    {
-        if (selectedCard == null)
-            return;
+		selectedCard.transform.DOLocalMove(selectedCard.selected ? new Vector3(0, selectedCard.selectionOffset, 0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
 
-        selectedCard.transform.DOLocalMove(selectedCard.selected ? new Vector3(0,selectedCard.selectionOffset,0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
+		rect.sizeDelta += Vector2.right;
+		rect.sizeDelta -= Vector2.right;
 
-        rect.sizeDelta += Vector2.right;
-        rect.sizeDelta -= Vector2.right;
+		selectedCard = null;
 
-        selectedCard = null;
-
-    }
+		SFXManager.instance.PlayCardEndDragSFX();
+	}
 
     void CardPointerEnter(Card card)
     {
         hoveredCard = card;
+        SFXManager.instance.PlayCardHoverSFX();
     }
 
     void CardPointerExit(Card card)
@@ -114,7 +118,6 @@ public class HorizontalCardHolder : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-
             if (selectedCard.transform.position.x > cards[i].transform.position.x)
             {
                 if (selectedCard.ParentIndex() < cards[i].ParentIndex())
@@ -160,5 +163,4 @@ public class HorizontalCardHolder : MonoBehaviour
             card.cardVisual.UpdateIndex(transform.childCount);
         }
     }
-
 }
