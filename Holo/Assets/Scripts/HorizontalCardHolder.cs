@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using System.Linq;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(RectTransform))]
 public class HorizontalCardHolder : MonoBehaviour
 {
-
-    [SerializeField] private Card selectedCard;
+    [SerializeField] private Card draggedCard;
     [SerializeReference] private Card hoveredCard;
+    public Card selectedCard;
 
     [SerializeField] private GameObject slotPrefab;
     private RectTransform rect;
 
-    [Header("Spawn Settings")]
+	[Header("Spawn Settings")]
+	[SerializeField] private bool isPlayerDeck = false;
     [SerializeField] private int cardsToSpawn = 7;
-    public List<Card> cards;
+	public List<Card> cards;
+	
+	[Header("Events")]
+	[HideInInspector] public UnityEvent SelectedCardEvent;
 
     bool isCrossing = false;
     [SerializeField] private bool tweenCardReturn = true;
@@ -39,7 +44,9 @@ public class HorizontalCardHolder : MonoBehaviour
             card.PointerExitEvent.AddListener(CardPointerExit);
             card.BeginDragEvent.AddListener(BeginDrag);
             card.EndDragEvent.AddListener(EndDrag);
-            card.name = cardCount.ToString();
+            card.SelectEvent.AddListener(Selected);
+			card.name = cardCount.ToString();
+			card.isPlayerCard = isPlayerDeck;
             cardCount++;
         }
 
@@ -60,23 +67,29 @@ public class HorizontalCardHolder : MonoBehaviour
 
     private void BeginDrag(Card card)
     {
-        selectedCard = card;
+        draggedCard = card;
         SFXManager.instance.PlayCardBeginDragSFX();
     }
 
 	void EndDrag(Card card)
 	{
-		if (selectedCard == null)
+		if (draggedCard == null)
 			return;
 
-		selectedCard.transform.DOLocalMove(selectedCard.selected ? new Vector3(0, selectedCard.selectionOffset, 0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
+		draggedCard.transform.DOLocalMove(draggedCard.isSelected ? new Vector3(0, draggedCard.selectionOffset, 0) : Vector3.zero, tweenCardReturn ? .15f : 0).SetEase(Ease.OutBack);
 
 		rect.sizeDelta += Vector2.right;
 		rect.sizeDelta -= Vector2.right;
 
-		selectedCard = null;
+		draggedCard = null;
 
 		SFXManager.instance.PlayCardEndDragSFX();
+	}
+
+	void Selected(Card card)
+	{
+		selectedCard = card;
+		SelectedCardEvent.Invoke();
 	}
 
     void CardPointerEnter(Card card)
@@ -98,7 +111,6 @@ public class HorizontalCardHolder : MonoBehaviour
             {
                 Destroy(hoveredCard.transform.parent.gameObject);
                 cards.Remove(hoveredCard);
-
             }
         }
 
@@ -110,7 +122,7 @@ public class HorizontalCardHolder : MonoBehaviour
             }
         }
 
-        if (selectedCard == null)
+        if (draggedCard == null)
             return;
 
         if (isCrossing)
@@ -118,18 +130,18 @@ public class HorizontalCardHolder : MonoBehaviour
 
         for (int i = 0; i < cards.Count; i++)
         {
-            if (selectedCard.transform.position.x > cards[i].transform.position.x)
+            if (draggedCard.transform.position.x > cards[i].transform.position.x)
             {
-                if (selectedCard.ParentIndex() < cards[i].ParentIndex())
+                if (draggedCard.ParentIndex() < cards[i].ParentIndex())
                 {
                     Swap(i);
                     break;
                 }
             }
 
-            if (selectedCard.transform.position.x < cards[i].transform.position.x)
+            if (draggedCard.transform.position.x < cards[i].transform.position.x)
             {
-                if (selectedCard.ParentIndex() > cards[i].ParentIndex())
+                if (draggedCard.ParentIndex() > cards[i].ParentIndex())
                 {
                     Swap(i);
                     break;
@@ -142,19 +154,19 @@ public class HorizontalCardHolder : MonoBehaviour
     {
         isCrossing = true;
 
-        Transform focusedParent = selectedCard.transform.parent;
+        Transform focusedParent = draggedCard.transform.parent;
         Transform crossedParent = cards[index].transform.parent;
 
         cards[index].transform.SetParent(focusedParent);
-        cards[index].transform.localPosition = cards[index].selected ? new Vector3(0, cards[index].selectionOffset, 0) : Vector3.zero;
-        selectedCard.transform.SetParent(crossedParent);
+        cards[index].transform.localPosition = cards[index].isSelected ? new Vector3(0, cards[index].selectionOffset, 0) : Vector3.zero;
+        draggedCard.transform.SetParent(crossedParent);
 
         isCrossing = false;
 
         if (cards[index].cardVisual == null)
             return;
 
-        bool swapIsRight = cards[index].ParentIndex() > selectedCard.ParentIndex();
+        bool swapIsRight = cards[index].ParentIndex() > draggedCard.ParentIndex();
         cards[index].cardVisual.Swap(swapIsRight ? -1 : 1);
 
         //Updated Visual Indexes
