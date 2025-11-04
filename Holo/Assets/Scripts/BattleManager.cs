@@ -39,6 +39,14 @@ public class BattleManager : MonoBehaviour
 			{
 				EnableAttackButton();
 			}
+			else
+			{
+				DisableAttackButton();
+			}
+		}
+		else
+		{
+			DisableAttackButton();
 		}
 	}
 
@@ -47,7 +55,7 @@ public class BattleManager : MonoBehaviour
 		DisableAttackButton();
 
 		SFXManager.instance.PlayCardAttackSFX();
-		
+
 		mana -= playerCard.cost;
 
 		jokerCard.hitpoints -= playerCard.strength;
