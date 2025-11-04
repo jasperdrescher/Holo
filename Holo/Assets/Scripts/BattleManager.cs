@@ -8,7 +8,7 @@ public class BattleManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI manaText;
 	[SerializeField] private TextMeshProUGUI roundText;
 
-	public int round = 0;
+	public int round = 1;
 	public int mana = 10;
 
 	private void Start()

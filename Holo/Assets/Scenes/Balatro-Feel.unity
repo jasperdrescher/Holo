@@ -3354,7 +3354,7 @@ MonoBehaviour:
   npcCardHolder: {fileID: 176730504}
   manaText: {fileID: 1745807995}
   roundText: {fileID: 1164085494}
-  round: 0
+  round: 1
   mana: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
