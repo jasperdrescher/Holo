@@ -60,6 +60,7 @@ public class HorizontalCardHolder : MonoBehaviour
 				if (cards[i].cardVisual != null)
 				{
 					cards[i].cardVisual.UpdateIndex(transform.childCount);
+					cards[i].cardVisual.UpdateStats();
 				}
 			}
 		}

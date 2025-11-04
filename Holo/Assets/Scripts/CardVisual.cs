@@ -99,6 +99,35 @@ public class CardVisual : MonoBehaviour
 	{
 		transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
 	}
+
+	public void UpdateStats()
+	{
+		switch (GetEdition())
+		{
+			case Edition.Regular:
+				parentCard.strength = 2;
+				parentCard.cost = 1;
+				parentCard.hitpoints = 2;
+				break;
+			case Edition.Foil:
+				parentCard.strength = 4;
+				parentCard.cost = 2;
+				parentCard.hitpoints = 4;
+				break;
+			case Edition.Polychrome:
+				parentCard.strength = 6;
+				parentCard.cost = 4;
+				parentCard.hitpoints = 6;
+				break;
+			case Edition.Negative:
+				parentCard.strength = 8;
+				parentCard.cost = 5;
+				parentCard.hitpoints = 12;
+				break;
+		}
+
+		UpdateVisual();
+	}
 	
 	public Edition GetEdition()
 	{

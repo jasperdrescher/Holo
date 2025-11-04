@@ -47,11 +47,15 @@ public class BattleManager : MonoBehaviour
 		DisableAttackButton();
 
 		SFXManager.instance.PlayCardAttackSFX();
+		
+		mana -= playerCard.cost;
 
 		jokerCard.hitpoints -= playerCard.strength;
 		if (jokerCard.hitpoints <= 0)
 		{
 			npcCardHolder.OnCardDied(jokerCard);
+
+			mana += 2;
 
 			SFXManager.instance.PlayCardDiedSFX();
 		}
@@ -63,7 +67,6 @@ public class BattleManager : MonoBehaviour
 		playerCardHolder.DeselectAll();
 		npcCardHolder.DeselectAll();
 
-		mana -= playerCard.cost;
 		round++;
 
 		UpdateStats();
