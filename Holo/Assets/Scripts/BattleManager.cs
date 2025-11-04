@@ -25,10 +25,14 @@ public class BattleManager : MonoBehaviour
 	
 	private void Attack(Card playerCard, Card jokerCard)
 	{
+		SFXManager.instance.PlayCardAttackSFX();
+
 		jokerCard.hitpoints -= playerCard.strength;
 		if (jokerCard.hitpoints <= 0)
 		{
 			npcCardHolder.OnCardDied(jokerCard);
+
+			SFXManager.instance.PlayCardDiedSFX();
 		}
 		else
 		{

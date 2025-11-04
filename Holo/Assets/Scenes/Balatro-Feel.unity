@@ -1637,6 +1637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
   BackgroundMusic1: {fileID: 8300000, guid: 6fa80e5b8cbecda4db267c406334e80c, type: 3}
   BackgroundMusic2: {fileID: 8300000, guid: 54e609cd84c0b704fbcf737d10598d5b, type: 3}
+  disableMusic: 1
 --- !u!82 &847173525
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2111,6 +2112,8 @@ MonoBehaviour:
   cardHoverClip: {fileID: 8300000, guid: e337153d3c5cea842a18aa79abafbb4f, type: 3}
   cardBeginDragClip: {fileID: 8300000, guid: 0bd6e42e6de4cf947979cbe2d58717d8, type: 3}
   cardEndDragClip: {fileID: 8300000, guid: 857712367e374ae4eb8ff40096dd8210, type: 3}
+  cardAttackClip: {fileID: 8300000, guid: 9647a1ba42c2db24e805e8fdaee8ee5a, type: 3}
+  cardDiedClip: {fileID: 8300000, guid: 6ff396998c97a1949b9e80d05d9653fa, type: 3}
 --- !u!82 &1572288428
 AudioSource:
   m_ObjectHideFlags: 0

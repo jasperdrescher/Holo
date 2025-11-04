@@ -9,6 +9,8 @@ public class SFXManager : MonoBehaviour
 	[SerializeField] private AudioClip cardHoverClip;
 	[SerializeField] private AudioClip cardBeginDragClip;
 	[SerializeField] private AudioClip cardEndDragClip;
+	[SerializeField] private AudioClip cardAttackClip;
+	[SerializeField] private AudioClip cardDiedClip;
 
 	private AudioSource audioSource;
 
@@ -61,5 +63,15 @@ public class SFXManager : MonoBehaviour
 	public void PlayCardEndDragSFX()
 	{
 		PlaySFX(cardEndDragClip);
+	}
+
+	public void PlayCardAttackSFX()
+	{
+		PlaySFX(cardAttackClip);
+	}
+
+	public void PlayCardDiedSFX()
+	{
+		PlaySFX(cardDiedClip);
 	}
 }
