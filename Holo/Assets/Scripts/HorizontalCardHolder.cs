@@ -58,7 +58,9 @@ public class HorizontalCardHolder : MonoBehaviour
 			for (int i = 0; i < cards.Count; i++)
 			{
 				if (cards[i].cardVisual != null)
+				{
 					cards[i].cardVisual.UpdateIndex(transform.childCount);
+				}
 			}
 		}
 

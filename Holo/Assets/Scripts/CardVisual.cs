@@ -61,12 +61,15 @@ public class CardVisual : MonoBehaviour
 
     private float curveYOffset;
 	private float curveRotationOffset;
-	
-    private bool isInitialized = false;
+
+	private bool isInitialized = false;
+
+	private ShaderCode shaderCode;
 
     private void Start()
     {
-        shadowDistance = visualShadow.localPosition;
+		shadowDistance = visualShadow.localPosition;
+		shaderCode = GetComponentInChildren<ShaderCode>();
     }
 
     public void Initialize(Card target, int index = 0)
@@ -92,10 +95,15 @@ public class CardVisual : MonoBehaviour
         isInitialized = true;
     }
 
-    public void UpdateIndex(int length)
-    {
-        transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
-    }
+	public void UpdateIndex(int length)
+	{
+		transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
+	}
+	
+	public Edition GetEdition()
+	{
+		return shaderCode.edition;
+	}
 
 	void Update()
 	{

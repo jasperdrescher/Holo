@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class BattleManager : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class BattleManager : MonoBehaviour
 	[SerializeField] private HorizontalCardHolder npcCardHolder;
 	[SerializeField] private TextMeshProUGUI manaText;
 	[SerializeField] private TextMeshProUGUI roundText;
+	[SerializeField] private Button attackButton;
 
 	public int round = 1;
 	public int mana = 10;
@@ -20,23 +22,29 @@ public class BattleManager : MonoBehaviour
 		npcCardHolder.SelectedCardEvent.AddListener(OnSelected);
 
 		UpdateStats();
+
+		DisableAttackButton();
+	}
+
+	public void AttackEvent()
+	{
+		Attack(playerCardHolder.selectedCard, npcCardHolder.selectedCard);
 	}
 
 	private void OnSelected()
 	{
 		if (playerCardHolder.selectedCard && npcCardHolder.selectedCard)
 		{
-			Debug.Log("Fight!");
-			Attack(playerCardHolder.selectedCard, npcCardHolder.selectedCard);
+			if (playerCardHolder.selectedCard.cost <= mana)
+			{
+				EnableAttackButton();
+			}
 		}
 	}
 
 	private void Attack(Card playerCard, Card jokerCard)
 	{
-		if (playerCard.cost > mana)
-		{
-			return;
-		}
+		DisableAttackButton();
 
 		SFXManager.instance.PlayCardAttackSFX();
 
@@ -60,10 +68,20 @@ public class BattleManager : MonoBehaviour
 
 		UpdateStats();
 	}
-	
+
 	private void UpdateStats()
 	{
 		manaText.SetText("Mana " + mana.ToString());
 		roundText.SetText("Round " + round.ToString());
+	}
+
+	private void EnableAttackButton()
+	{
+		attackButton.interactable = true;
+	}
+
+	private void DisableAttackButton()
+	{
+		attackButton.interactable = false;
 	}
 }
