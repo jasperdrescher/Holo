@@ -16,6 +16,7 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
 	public int hitpoints = 10;
 	public int strength = 2;
+	public int cost = 1;
 
 	public bool isPlayerCard = false;
 
@@ -170,6 +171,8 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 			else
 				transform.localPosition = Vector3.zero;
 		}
+
+		SelectEvent.Invoke(this);
 	}
 
 	public int SiblingAmount()

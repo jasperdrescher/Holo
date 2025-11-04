@@ -189,4 +189,12 @@ public class HorizontalCardHolder : MonoBehaviour
 		Destroy(deadCard.transform.parent.gameObject);
 		cards.Remove(deadCard);
 	}
+
+	public void DeselectAll()
+	{
+		foreach (Card card in cards)
+		{
+			card.Deselect();
+		}
+	}
 }

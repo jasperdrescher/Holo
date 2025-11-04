@@ -24,6 +24,7 @@ public class CardVisual : MonoBehaviour
 	[SerializeField] private Image cardImage;
 	[SerializeField] private TextMeshProUGUI hitpointsText;
 	[SerializeField] private TextMeshProUGUI strengthText;
+	[SerializeField] private TextMeshProUGUI costText;
 
     [Header("Follow Parameters")]
     [SerializeField] private float followSpeed = 30;
@@ -110,6 +111,7 @@ public class CardVisual : MonoBehaviour
 	{
 		hitpointsText.SetText("HP " + parentCard.hitpoints.ToString());
 		strengthText.SetText("STR " + parentCard.strength.ToString());
+		costText.SetText("CST " + parentCard.cost.ToString());
 	}
 
     private void HandPositioning()
