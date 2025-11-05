@@ -1,17 +1,26 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
+
+public enum TurnAuthor
+{
+	AI,
+	Player
+}
 
 public class BattleManager : MonoBehaviour
 {
 	[SerializeField] private HorizontalCardHolder playerCardHolder;
 	[SerializeField] private HorizontalCardHolder npcCardHolder;
 	[SerializeField] private TextMeshProUGUI manaText;
-	[SerializeField] private TextMeshProUGUI roundText;
+	[SerializeField] private TextMeshProUGUI turnText;
 	[SerializeField] private Button attackButton;
 
-	public int round = 1;
+	public int turn = 1;
 	public int mana = 10;
+
+	public TurnAuthor turnAuthor = TurnAuthor.Player;
 
 	private void Start()
 	{
@@ -75,7 +84,7 @@ public class BattleManager : MonoBehaviour
 		playerCardHolder.DeselectAll();
 		npcCardHolder.DeselectAll();
 
-		round++;
+		StartNextTurn();
 
 		UpdateStats();
 	}
@@ -83,7 +92,39 @@ public class BattleManager : MonoBehaviour
 	private void UpdateStats()
 	{
 		manaText.SetText("Mana " + mana.ToString());
-		roundText.SetText("Round " + round.ToString());
+		turnText.SetText("Turn " + turn.ToString());
+	}
+
+	private void StartNextTurn()
+	{
+		turn++;
+
+		if (turnAuthor == TurnAuthor.Player)
+		{
+			turnAuthor = TurnAuthor.AI;
+
+			StartCoroutine(AITurn());
+		}
+		else
+		{
+			turnAuthor = TurnAuthor.Player;
+		}
+	}
+
+	private IEnumerator AITurn()
+	{
+		yield return new WaitForSeconds(1f);
+		Card selectedNpcCard = npcCardHolder.cards[Random.Range(0, npcCardHolder.cards.Count)];
+		selectedNpcCard.AISelect();
+        SFXManager.instance.PlayCardHoverSFX();
+
+		yield return new WaitForSeconds(1f);
+		Card selectedPlayerCard = playerCardHolder.cards[Random.Range(0, playerCardHolder.cards.Count)];
+		selectedPlayerCard.AISelect();
+        SFXManager.instance.PlayCardHoverSFX();
+
+		yield return new WaitForSeconds(1f);
+		Attack(selectedPlayerCard, selectedNpcCard);
 	}
 
 	private void EnableAttackButton()
