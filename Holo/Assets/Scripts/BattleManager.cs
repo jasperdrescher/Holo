@@ -1,7 +1,8 @@
-using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
 using System.Collections;
+using TMPro;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UI;
 
 public enum TurnAuthor
 {
@@ -15,10 +16,13 @@ public class BattleManager : MonoBehaviour
 	[SerializeField] private HorizontalCardHolder npcCardHolder;
 	[SerializeField] private TextMeshProUGUI manaText;
 	[SerializeField] private TextMeshProUGUI turnText;
+	[SerializeField] private TextMeshProUGUI anyoneWonText;
+	[SerializeField] private GameObject anyoneWonPanel;
 	[SerializeField] private Button attackButton;
 
 	public int turn = 1;
 	public int mana = 10;
+
 
 	public TurnAuthor turnAuthor = TurnAuthor.Player;
 
@@ -29,6 +33,8 @@ public class BattleManager : MonoBehaviour
 
 		playerCardHolder.SelectedCardEvent.AddListener(OnSelected);
 		npcCardHolder.SelectedCardEvent.AddListener(OnSelected);
+
+		anyoneWonPanel.SetActive(false);
 
 		UpdateStats();
 
@@ -65,26 +71,77 @@ public class BattleManager : MonoBehaviour
 
 		SFXManager.instance.PlayCardAttackSFX();
 
-		mana -= playerCard.cost;
-
-		jokerCard.hitpoints -= playerCard.strength;
-		if (jokerCard.hitpoints <= 0)
+		bool hasAnyoneWon = false;
+		if (turnAuthor == TurnAuthor.Player)
 		{
-			npcCardHolder.OnCardDied(jokerCard);
+			mana -= playerCard.cost;
 
-			mana += 2;
+			jokerCard.hitpoints -= playerCard.strength;
+			if (jokerCard.hitpoints <= 0)
+			{
+				npcCardHolder.OnCardDied(jokerCard);
 
-			SFXManager.instance.PlayCardDiedSFX();
+				switch (jokerCard.cardVisual.GetEdition())
+				{
+					case Edition.Regular:
+						mana += 2;
+						break;
+					case Edition.Polychrome:
+						mana += 4;
+						break;
+					case Edition.Foil:
+						mana += 3;
+						break;
+					case Edition.Negative:
+						mana += 5;
+						break;
+				}
+
+				SFXManager.instance.PlayCardDiedSFX();
+
+				if (npcCardHolder.cards.Count == 0)
+				{
+					SFXManager.instance.PlayVictorySFX();
+					MusicManager.instance.StopMusic();
+					anyoneWonText.text = "You won!";
+					anyoneWonPanel.SetActive(true);
+					hasAnyoneWon = true;
+				}
+			}
+			else
+			{
+				jokerCard.cardVisual.UpdateVisual();
+			}
 		}
 		else
 		{
-			jokerCard.cardVisual.UpdateVisual();
+			playerCard.hitpoints -= jokerCard.strength;
+			if (playerCard.hitpoints <= 0)
+			{
+				playerCardHolder.OnCardDied(playerCard);
+
+				SFXManager.instance.PlayCardDiedSFX();
+
+				if (playerCardHolder.cards.Count == 0)
+				{
+					SFXManager.instance.PlayDefeatSFX();
+					MusicManager.instance.StopMusic();
+					anyoneWonText.text = "You lost!";
+					anyoneWonPanel.SetActive(true);
+					hasAnyoneWon = true;
+				}
+			}
+			else
+			{
+				playerCard.cardVisual.UpdateVisual();
+			}
 		}
 
 		playerCardHolder.DeselectAll();
 		npcCardHolder.DeselectAll();
 
-		StartNextTurn();
+		if (!hasAnyoneWon)
+			StartNextTurn();
 
 		UpdateStats();
 	}
@@ -109,6 +166,15 @@ public class BattleManager : MonoBehaviour
 		{
 			turnAuthor = TurnAuthor.Player;
 		}
+	}
+
+	public void QuitEvent()
+	{
+#if UNITY_EDITOR
+        EditorApplication.ExitPlaymode();
+#else
+        Application.Quit();
+#endif
 	}
 
 	private IEnumerator AITurn()

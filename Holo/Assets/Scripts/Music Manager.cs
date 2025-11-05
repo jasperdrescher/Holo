@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour
 {
+	public static MusicManager instance;
+
 	[SerializeField] private AudioClip BackgroundMusic1;
 	[SerializeField] private AudioClip BackgroundMusic2;
 
@@ -11,6 +13,19 @@ public class MusicManager : MonoBehaviour
 #endif
 
 	private AudioSource audioSource;
+
+	private void Awake()
+	{
+		if (instance == null)
+		{
+			instance = this;
+			DontDestroyOnLoad(gameObject);
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+	}
 
 	void Start()
 	{
@@ -27,5 +42,10 @@ public class MusicManager : MonoBehaviour
 #else
 		audioSource.PlayOneShot(BackgroundMusic1);
 #endif
+	}
+
+	public void StopMusic()
+	{
+		audioSource.Stop();
 	}
 }
