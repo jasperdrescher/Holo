@@ -23,7 +23,6 @@ public class BattleManager : MonoBehaviour
 	public int turn = 1;
 	public int mana = 10;
 
-
 	public TurnAuthor turnAuthor = TurnAuthor.Player;
 
 	private void Start()

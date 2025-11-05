@@ -24,35 +24,41 @@ public class HorizontalCardHolder : MonoBehaviour
 	[HideInInspector] public UnityEvent SelectedCardEvent;
 
     bool isCrossing = false;
-    [SerializeField] private bool tweenCardReturn = true;
+	[SerializeField] private bool tweenCardReturn = true;
 
-    void Start()
-    {
-        for (int i = 0; i < cardsToSpawn; i++)
-        {
-            Instantiate(slotPrefab, transform);
-        }
+	private BattleManager _battleManager;
 
-        rect = GetComponent<RectTransform>();
-        cards = GetComponentsInChildren<Card>().ToList();
+	void Start()
+	{
+		_battleManager = FindFirstObjectByType<BattleManager>();
+		if (!_battleManager)
+			Debug.LogError("Failed to find Battle Manager");
 
-        int cardCount = 0;
+		for (int i = 0; i < cardsToSpawn; i++)
+		{
+			Instantiate(slotPrefab, transform);
+		}
 
-        foreach (Card card in cards)
-        {
-            card.PointerEnterEvent.AddListener(CardPointerEnter);
-            card.PointerExitEvent.AddListener(CardPointerExit);
-            card.BeginDragEvent.AddListener(BeginDrag);
-            card.EndDragEvent.AddListener(EndDrag);
-            card.SelectEvent.AddListener(Selected);
+		rect = GetComponent<RectTransform>();
+		cards = GetComponentsInChildren<Card>().ToList();
+
+		int cardCount = 0;
+
+		foreach (Card card in cards)
+		{
+			card.PointerEnterEvent.AddListener(CardPointerEnter);
+			card.PointerExitEvent.AddListener(CardPointerExit);
+			card.BeginDragEvent.AddListener(BeginDrag);
+			card.EndDragEvent.AddListener(EndDrag);
+			card.SelectEvent.AddListener(Selected);
 			card.name = cardCount.ToString();
 			card.isPlayerCard = isPlayerDeck;
-            cardCount++;
-        }
+			cardCount++;
+		}
 
-        StartCoroutine(Frame());
+		StartCoroutine(Frame());
 
-        IEnumerator Frame()
+		IEnumerator Frame()
 		{
 			yield return new WaitForSecondsRealtime(.1f);
 			for (int i = 0; i < cards.Count; i++)
@@ -66,11 +72,11 @@ public class HorizontalCardHolder : MonoBehaviour
 		}
 
 		SFXManager.instance.PlayCardSpreadSFX();
-    }
+	}
 
     private void BeginDrag(Card card)
-    {
-        draggedCard = card;
+	{
+		draggedCard = card;
         SFXManager.instance.PlayCardBeginDragSFX();
     }
 
@@ -104,8 +110,8 @@ public class HorizontalCardHolder : MonoBehaviour
 	}
 
     void CardPointerEnter(Card card)
-    {
-        hoveredCard = card;
+	{
+		hoveredCard = card;
         SFXManager.instance.PlayCardHoverSFX();
     }
 
@@ -115,7 +121,10 @@ public class HorizontalCardHolder : MonoBehaviour
     }
 
     void Update()
-    {
+	{
+		if (_battleManager.turnAuthor == TurnAuthor.AI)
+			return;
+
         if (Input.GetKeyDown(KeyCode.Delete))
         {
             if (hoveredCard != null)

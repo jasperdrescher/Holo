@@ -47,8 +47,14 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 	[HideInInspector] public UnityEvent<Card> EndDragEvent;
 	[HideInInspector] public UnityEvent<Card> SelectEvent;
 
+	private BattleManager _battleManager;
+
 	void Start()
 	{
+		_battleManager = FindFirstObjectByType<BattleManager>();
+		if (!_battleManager)
+			Debug.LogError("Failed to find Battle Manager");
+
 		canvas = GetComponentInParent<Canvas>();
 		imageComponent = GetComponent<Image>();
 
@@ -84,6 +90,9 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
+		if (_battleManager.turnAuthor == TurnAuthor.AI)
+			return;
+
 		BeginDragEvent.Invoke(this);
 		Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		offset = mousePosition - (Vector2)transform.position;
@@ -117,6 +126,9 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
+		if (_battleManager.turnAuthor == TurnAuthor.AI)
+			return;
+
 		PointerEnterEvent.Invoke(this);
 		isHovering = true;
 	}
@@ -130,6 +142,9 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
+		if (_battleManager.turnAuthor == TurnAuthor.AI)
+			return;
+
 		if (eventData.button != PointerEventData.InputButton.Left)
 			return;
 
@@ -139,6 +154,9 @@ public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
 	public void OnPointerUp(PointerEventData eventData)
 	{
+		if (_battleManager.turnAuthor == TurnAuthor.AI)
+			return;
+
 		if (eventData.button != PointerEventData.InputButton.Left)
 			return;
 
