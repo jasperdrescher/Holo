@@ -47,6 +47,9 @@ public class BattleManager : MonoBehaviour
 
 	private void OnSelected()
 	{
+		if (turnAuthor == TurnAuthor.AI)
+			return;
+
 		if (playerCardHolder.selectedCard && npcCardHolder.selectedCard)
 		{
 			if (playerCardHolder.selectedCard.cost <= mana)
