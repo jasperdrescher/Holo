@@ -64,7 +64,7 @@ public class BattleManager : MonoBehaviour
 		}
 	}
 
-	private void Attack(Card playerCard, Card jokerCard)
+	private void Attack(Card playerCard, Card npcCard)
 	{
 		DisableAttackButton();
 
@@ -75,12 +75,12 @@ public class BattleManager : MonoBehaviour
 		{
 			mana -= playerCard.cost;
 
-			jokerCard.hitpoints -= playerCard.strength;
-			if (jokerCard.hitpoints <= 0)
+			npcCard.hitpoints -= playerCard.strength;
+			if (npcCard.hitpoints <= 0)
 			{
-				npcCardHolder.OnCardDied(jokerCard);
+				npcCardHolder.OnCardDied(npcCard);
 
-				switch (jokerCard.cardVisual.GetEdition())
+				switch (npcCard.cardVisual.GetEdition())
 				{
 					case Edition.Regular:
 						mana += 2;
@@ -109,12 +109,12 @@ public class BattleManager : MonoBehaviour
 			}
 			else
 			{
-				jokerCard.cardVisual.UpdateVisual();
+				npcCard.cardVisual.UpdateVisual();
 			}
 		}
 		else
 		{
-			playerCard.hitpoints -= jokerCard.strength;
+			playerCard.hitpoints -= npcCard.strength;
 			if (playerCard.hitpoints <= 0)
 			{
 				playerCardHolder.OnCardDied(playerCard);
