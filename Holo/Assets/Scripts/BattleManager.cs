@@ -179,12 +179,36 @@ public class BattleManager : MonoBehaviour
 	private IEnumerator AITurn()
 	{
 		yield return new WaitForSeconds(1f);
-		Card selectedNpcCard = npcCardHolder.cards[Random.Range(0, npcCardHolder.cards.Count)];
+
+		int prevHighestStrength = 0;
+		int bestCardIndex = 0;
+		for (int i = 0; i < npcCardHolder.cards.Count; i++)
+		{
+			if (npcCardHolder.cards[i].strength > prevHighestStrength)
+			{
+				prevHighestStrength = npcCardHolder.cards[i].strength;
+				bestCardIndex = i;
+			}
+		}
+
+		Card selectedNpcCard = npcCardHolder.cards[bestCardIndex];
 		selectedNpcCard.AISelect();
         SFXManager.instance.PlayCardHoverSFX();
 
 		yield return new WaitForSeconds(1f);
-		Card selectedPlayerCard = playerCardHolder.cards[Random.Range(0, playerCardHolder.cards.Count)];
+
+		prevHighestStrength = 0;
+		bestCardIndex = 0;
+		for (int i = 0; i < playerCardHolder.cards.Count; i++)
+		{
+			if (playerCardHolder.cards[i].strength > prevHighestStrength)
+			{
+				prevHighestStrength = playerCardHolder.cards[i].strength;
+				bestCardIndex = i;
+			}
+		}
+
+		Card selectedPlayerCard = playerCardHolder.cards[bestCardIndex];
 		selectedPlayerCard.AISelect();
         SFXManager.instance.PlayCardHoverSFX();
 
