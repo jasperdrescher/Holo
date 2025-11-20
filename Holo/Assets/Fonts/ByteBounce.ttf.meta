@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 592d8e3417daaad42a80b99df8b835ed
+guid: 6c848db3565cb1a4bab98c43541337b5
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Medodica
+  - ByteBounce
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
