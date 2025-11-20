@@ -146,9 +146,9 @@ public class CardVisual : MonoBehaviour
 	
 	public void UpdateVisual()
 	{
-		hitpointsText.SetText("HP " + parentCard.hitpoints.ToString());
-		strengthText.SetText("STR " + parentCard.strength.ToString());
-		costText.SetText("CST " + parentCard.cost.ToString());
+		hitpointsText.SetText(parentCard.hitpoints.ToString());
+		strengthText.SetText(parentCard.strength.ToString());
+		costText.SetText(parentCard.cost.ToString());
 	}
 
     private void HandPositioning()
