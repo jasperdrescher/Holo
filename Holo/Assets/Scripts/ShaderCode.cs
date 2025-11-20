@@ -17,7 +17,13 @@ public class ShaderCode : MonoBehaviour
 	Material material;
 	public Edition edition;
 
-    // Start is called before the first frame update
+    private void Awake()
+    {
+		Array values = Enum.GetValues(typeof(Edition));
+		int randomIndex = UnityEngine.Random.Range(0, values.Length);
+		edition = (Edition)values.GetValue(randomIndex);
+	}
+
     void Start()
     {
         image = GetComponent<Image>();
@@ -28,10 +34,7 @@ public class ShaderCode : MonoBehaviour
 		{
 			image.material.DisableKeyword(image.material.enabledKeywords[i]);
 		}
-
-		Array values = Enum.GetValues(typeof(Edition));
-		int randomIndex = UnityEngine.Random.Range(0, values.Length);
-		edition = (Edition)values.GetValue(randomIndex);
+		
         image.material.EnableKeyword("_EDITION_" + edition.ToString().ToUpper());
     }
 

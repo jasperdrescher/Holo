@@ -69,25 +69,32 @@ public class CardVisual : MonoBehaviour
     private void Start()
     {
 		shadowDistance = visualShadow.localPosition;
-		shaderCode = GetComponentInChildren<ShaderCode>();
     }
 
-    public void Initialize(Card target, int index = 0)
+    public void Initialize(Card target)
     {
         //Declarations
         parentCard = target;
         cardTransform = target.transform;
         canvas = GetComponent<Canvas>();
 		shadowCanvas = visualShadow.GetComponent<Canvas>();
+		shaderCode = GetComponentInChildren<ShaderCode>();
 
-        //Event Listening
-        parentCard.PointerEnterEvent.AddListener(PointerEnter);
+		//Event Listening
+		parentCard.PointerEnterEvent.AddListener(PointerEnter);
         parentCard.PointerExitEvent.AddListener(PointerExit);
         parentCard.BeginDragEvent.AddListener(BeginDrag);
         parentCard.EndDragEvent.AddListener(EndDrag);
         parentCard.PointerDownEvent.AddListener(PointerDown);
         parentCard.PointerUpEvent.AddListener(PointerUp);
 		parentCard.SelectEvent.AddListener(Select);
+
+        if (GetEdition() == Edition.Negative)
+        {
+            hitpointsText.color = Color.white;
+			strengthText.color = Color.white;
+			costText.color = Color.white;
+		}
 
 		UpdateVisual();
 
